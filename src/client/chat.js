@@ -37,6 +37,18 @@ socket.on('chatkey', (word) => {
   }
 });
 
+socket.on('playerJoined', (user, extra) => {
+   console.log(user);
+   console.dir(user);
+   console.dir(extra);
+  console.log(`Player joined: Welcome ${user}`);
+  var playerList = document.getElementById('playerList');
+  var userItem = document.createElement('span');
+  userItem.innerText = user;
+
+  playerList.appendChild(userItem); 
+})
+
 function startGameForChat() {
   socket.emit('startgame');
 }

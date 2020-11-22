@@ -1,4 +1,5 @@
 const ComfyJS = require('comfy.js');
+const { emit } = require('./server');
 
 let gameStarted = false;
 let serverSocket;
@@ -12,14 +13,15 @@ const reee = /^[^\s\.\?!]+$/;
 module.exports = {
   connect,
   startGame,
-  endGame
+  endGame,
+  players
 };
 
 function connect(server) {
   serverSocket = server;
   ComfyJS.onChat = chatHandler;
   ComfyJS.onCommand = commandHandler;
-  ComfyJS.Init('clarkio');
+  ComfyJS.Init('cmjchrisjones');
 }
 
 function startGame() {
@@ -47,6 +49,7 @@ function chatHandler(user, message, flags, self, extra) {
 function commandHandler(user, command, message, flags, extra) {
   if (command === 'join' && !players.find(player => player === user)) {
     players.push(user);
+    serverSocket.emit('playerJoined', user, extra);
   }
 }
 

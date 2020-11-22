@@ -30,3 +30,14 @@
 .incorrect {
   background-color: red;
 }
+
+.playerImage {
+  border-radius: 50px;
+}
+
+div.players > h4 {
+  color: grey;
+  font-size: 0.5em;
+  margin: 5px;
+  padding:5px;
+}

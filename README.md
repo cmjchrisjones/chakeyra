@@ -17,8 +17,14 @@ This game was built with 💙 live on stream with the programming community. Com
 
 1. Open your terminal/command line tool
 1. Run `npm install`
-1. Run `npm start`
-1. Open your browser to [http://localhost:3000/](http://localhost:3000/)
+2. Run `npm start`
+
+3. Edit the connect function in  [./server/chat-capture.js](./src/server/chat-capture.js) to connect your Twitch stream, E.G
+```javascript
+ComfyJS.Init('clarkio');
+```
+
+4. Open your browser to [http://localhost:3000/](http://localhost:3000/)
 
 ### Playing the Game
 

@@ -19,7 +19,8 @@ let chatWords = [],
   chatStartTime,
   isGameEnabled = false,
   streamerTimer,
-  chatTimer;
+  chatTimer,
+  players;
 
 function startGame() {
   isGameEnabled = true;
@@ -90,7 +91,7 @@ function captureKey(event) {
   const streamerWordsElement = document.getElementById('streamer-words');
   if (streamerFirstKey) {
     streamerFirstKey = false;
-    // start streamer timer
+    // start streamer timer 
     streamerStartTime = Date.now();
   }
   if (key === streamerCharacters[0]) {
