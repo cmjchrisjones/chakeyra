@@ -4,6 +4,9 @@ const { emit } = require('./server');
 let gameStarted = false;
 let serverSocket;
 let players = [];
+let clientId;
+let clientSecret;
+let authToken;
 
 // regular expression to capture first word from chat message from viewer
 // regex provided by @NickAndMartinLearnStuff
@@ -17,10 +20,14 @@ module.exports = {
   players
 };
 
-function connect(server) {
+function connect(server, twitchClientId, twitchClientSecret, twitchChannelAuthToken) {
   serverSocket = server;
   ComfyJS.onChat = chatHandler;
   ComfyJS.onCommand = commandHandler;
+  clientSecret = twitchClientSecret;
+  clientId = twitchClientId;
+  authToken = twitchChannelAuthToken;
+
   ComfyJS.Init('cmjchrisjones');
 }
 
@@ -49,7 +56,7 @@ function chatHandler(user, message, flags, self, extra) {
 function commandHandler(user, command, message, flags, extra) {
   if (command === 'join' && !players.find(player => player === user)) {
     players.push(user);
-    serverSocket.emit('playerJoined', user, extra);
+    serverSocket.emit('playerJoined', user, extra.userId, clientId, authToken);
   }
 }
 

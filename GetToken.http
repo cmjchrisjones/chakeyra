@@ -1,0 +1,14 @@
+
+@TWITCH_CLIENT_ID = Enter Twitch Client ID Here
+@TWITCH_CLIENT_SECRET = Enter Twitch Client Secret Here
+
+# @name GetAccessToken
+POST https://id.twitch.tv/oauth2/token?client_id={{TWITCH_CLIENT_ID}}&client_secret={{TWITCH_CLIENT_SECRET}}&grant_type=client_credentials&scope=user:read:email
+
+@accessToken = {{GetAccessToken.response.body.access_token}}
+
+###
+GET https://api.twitch.tv/helix/users?id=218959968
+Client-ID: {{TWITCH_CLIENT_ID}}
+Accept: application/json
+Authorization: Bearer {{accessToken}}

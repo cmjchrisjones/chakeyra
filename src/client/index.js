@@ -22,6 +22,7 @@ let chatWords = [],
   chatTimer,
   players;
 
+
 function startGame() {
   isGameEnabled = true;
   updateTimers();

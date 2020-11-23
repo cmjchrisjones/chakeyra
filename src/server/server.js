@@ -27,7 +27,6 @@ const server = http.listen(port, function (error) {
   if (error) throw error;
   console.log(`The server is running: http://localhost:${port}`)
 });
-
-chatCapture.connect(io);
+chatCapture.connect(io, process.env.TWITCH_CLIENT_ID, process.env.TWITCH_CLIENT_SECRET, process.env.TWITCH_CHANNEL_AUTH_TOKEN);
 
 module.exports = server;

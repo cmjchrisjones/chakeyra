@@ -33,6 +33,7 @@
 
 .playerImage {
   border-radius: 50px;
+  width: 70px;
 }
 
 div.players > h4 {
