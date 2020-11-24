@@ -1,4 +1,12 @@
+class UserData {
+  constructor(userId, displayName, profileImageUrl) {
+    this.userId = userId;
+    this.displayName = displayName;
+    this.profileImageUrl = profileImageUrl;
+  }
+}
 
+let users = new Array();
 
 socket.on('chatkey', (word) => {
   if (!isGameEnabled) {
@@ -38,23 +46,32 @@ socket.on('chatkey', (word) => {
 });
 
 socket.on('playerJoined', async (user, userId, clientId, authToken) => {
-  console.log(clientId, authToken);
-  console.dir(user);
-  console.dir(userId);
   console.log(`Player joined: Welcome ${user}`);
-
-  var profilePicture = getUserProfilePic(userId, clientId, authToken)
+  getUserProfilePic(userId, clientId, authToken)
     .then(res => {
-      console.log(res);
       var playerList = document.getElementById('playerList');
-
       var img = document.createElement('img');
-      img.src = res;
       img.className = 'playerImage';
-      // var userItem = document.createElement('span');
+      img.src = res;
       playerList.appendChild(img);
     });
+
 });
+
+function updatePlayerCount() {
+  let element = document.getElementById('playerCount');
+  let text = document.createElement('span');
+  text.id = 'playerCountInfo';
+
+  if (users.length === 1) {
+    text.innerHTML = "1 player"
+  }
+  else {
+    text.innerHTML = `${users.length} players`;
+  }
+  element.textContent = '';
+  element.appendChild(text);
+}
 
 function getUserProfilePic(userId, clientId, authToken) {
   const config = {
@@ -77,7 +94,10 @@ function getUserProfilePic(userId, clientId, authToken) {
         const userData = body.data.length > 1 ? body.data : body.data[0];
         if (userData) {
           let profileUrl = userData.profile_image_url;
-          return profileUrl;
+          var user = new UserData(userId, userData.display_name, profileUrl);
+          users.push(user);
+          updatePlayerCount();
+          return profileUrl.replace('300x300', '70x70');
         }
       }
     })
