@@ -8,6 +8,7 @@ const chatCapture = require('./chat-capture');
 
 const port = process.env.PORT || 3000;
 
+
 app.use(express.static(path.resolve(`${__dirname}`, '../client')));
 
 app.get('/', function (req, res) {
@@ -21,12 +22,18 @@ io.on('connection', (socket) => {
   socket.on('endgame', () => {
     chatCapture.endGame();
   });
+  socket.on('getUserData', (userId) => {
+    console.log("in the server js: user ID = " + userId);
+    chatCapture.getUserProfilePic(userId);
+    
+  });
 });
 
 const server = http.listen(port, function (error) {
   if (error) throw error;
   console.log(`The server is running: http://localhost:${port}`)
 });
-chatCapture.connect(io, process.env.TWITCH_CLIENT_ID, process.env.TWITCH_CLIENT_SECRET, process.env.TWITCH_CHANNEL_AUTH_TOKEN);
+
+chatCapture.connect(io);
 
 module.exports = server;

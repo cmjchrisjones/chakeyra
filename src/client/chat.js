@@ -1,13 +1,3 @@
-class UserData {
-  constructor(userId, displayName, profileImageUrl) {
-    this.userId = userId;
-    this.displayName = displayName;
-    this.profileImageUrl = profileImageUrl;
-  }
-}
-
-let users = new Array();
-
 socket.on('chatkey', (word) => {
   if (!isGameEnabled) {
     return;
@@ -47,15 +37,12 @@ socket.on('chatkey', (word) => {
 
 socket.on('playerJoined', async (user, userId, clientId, authToken) => {
   console.log(`Player joined: Welcome ${user}`);
-  getUserProfilePic(userId, clientId, authToken)
-    .then(res => {
-      var playerList = document.getElementById('playerList');
-      var img = document.createElement('img');
-      img.className = 'playerImage';
-      img.src = res;
-      playerList.appendChild(img);
-    });
+  socket.emit("getUserData(userId)");
+});
 
+socket.on('updatedUsers', (userList) => {
+  console.log("Received updated player list");
+  console.table(userList);
 });
 
 function updatePlayerCount() {
@@ -73,36 +60,6 @@ function updatePlayerCount() {
   element.appendChild(text);
 }
 
-function getUserProfilePic(userId, clientId, authToken) {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${authToken}`,
-      'Content-Type': 'application/json',
-      'Client-ID': clientId
-    }
-  };
-
-  let url = `https://api.twitch.tv/helix/users?id=${userId}`;
-  return axios({
-    url: url,
-    method: 'get',
-    headers: config.headers
-  })
-    .then(res => {
-      if (res.data) {
-        const body = res.data;
-        const userData = body.data.length > 1 ? body.data : body.data[0];
-        if (userData) {
-          let profileUrl = userData.profile_image_url;
-          var user = new UserData(userId, userData.display_name, profileUrl);
-          users.push(user);
-          updatePlayerCount();
-          return profileUrl.replace('300x300', '70x70');
-        }
-      }
-    })
-    .catch(err => console.error(err))
-}
 
 
 

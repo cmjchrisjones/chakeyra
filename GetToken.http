@@ -1,6 +1,5 @@
-
-@TWITCH_CLIENT_ID = Enter Twitch Client ID Here
-@TWITCH_CLIENT_SECRET = Enter Twitch Client Secret Here
+@TWITCH_CLIENT_ID=7nvlhq45u9nfh9rs45vk6ooxl70m6q
+@TWITCH_CLIENT_SECRET=ocizlwuw0xu8gv5edk565nshgkfpf2
 
 # @name GetAccessToken
 POST https://id.twitch.tv/oauth2/token?client_id={{TWITCH_CLIENT_ID}}&client_secret={{TWITCH_CLIENT_SECRET}}&grant_type=client_credentials&scope=user:read:email
