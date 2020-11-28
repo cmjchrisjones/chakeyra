@@ -41,38 +41,57 @@ socket.on('playerJoined', async (user, userId, clientId, authToken) => {
 });
 
 socket.on('updatedUsers', (userList, newUser) => {
-  console.log("Received updated player list");
-  console.table(userList);
-  console.log(newUser)
   var playerList = document.getElementById('playerList');
-  var img = document.createElement('img');
-  img.className = 'playerImage';
-  img.src = newUser.profileImageUrl;
-  console.log(img);
-  playerList.appendChild(img);
+  if (userList.length > 0 && newUser !== undefined) {
+    var profileImageContainer = document.createElement('div');
+    profileImageContainer.className = 'profileImageContainer';
 
-  var playerCount = document.getElementById('playerCountInfo');
-  playerCount.innerText = "";
-  playerCount.innerText = userList.length < 2 ? `${userList.length} player` : `${userList.length} players`
+
+    var nameTag = document.createElement('span');
+    nameTag.className = 'nameTag';
+    nameTag.innerText = newUser.displayName;
+
+    var img = document.createElement('img');
+    img.className = 'playerImage';
+    img.src = newUser.profileImageUrl;
+    img.alt = newUser.displayName
+    img.title = newUser.displayName
+    profileImageContainer.appendChild(img);
+    profileImageContainer.appendChild(nameTag);
+    playerList.appendChild(profileImageContainer);
+    }
+  else if (userList.length === 0) {
+    var elementsToDelete = playerList.getElementsByClassName('profileImageContainer');
+    while (elementsToDelete[0]) {
+      elementsToDelete[0].parentNode.removeChild(elementsToDelete[0]);
+    }
+  }
+  updatePlayerCount(userList);
 });
 
-function updatePlayerCount() {
+function updatePlayerCount(users) {
   let element = document.getElementById('playerCount');
   let text = document.createElement('span');
   text.id = 'playerCountInfo';
+  if (users !== undefined) {
+    switch (users.length) {
+      case 0:
+        text.innerHTML = "No chat players";
+        break;
+      case 1:
+        text.innerHTML = "1 player"
+        break;
+      default:
+        text.innerHTML = `${users.length} players`;
+    }
+  } else {
+    text.innerHTML = "No chat players";
+  }
 
-  if (users.length === 1) {
-    text.innerHTML = "1 player"
-  }
-  else {
-    text.innerHTML = `${users.length} players`;
-  }
   element.textContent = '';
   element.appendChild(text);
+
 }
-
-
-
 
 function startGameForChat() {
   socket.emit('startgame');

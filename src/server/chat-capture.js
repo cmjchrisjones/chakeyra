@@ -27,7 +27,6 @@ class UserData {
   }
 }
 
-
 let users = new Array();
 
 function getUserProfilePic(userId) {
@@ -46,15 +45,11 @@ function getUserProfilePic(userId) {
         const userData = body.data.length > 1 ? body.data : body.data[0];
         if (userData) {
           let profileUrl = userData.profile_image_url;
-          // var user = new UserData(userId, userData.display_name, profileUrl);
-          // users.push(user);
-          // updatePlayerCount();
           var profileImageUrl = profileUrl.replace('300x300', '70x70'); 
           return profileImageUrl;
         }
       }
     })
-
     .catch(err => console.error(err));
 }
 
@@ -74,6 +69,8 @@ function startGame() {
 function endGame() {
   gameStarted = false;
   players = [];
+  users = [];
+  serverSocket.emit('updatedUsers', users);
 }
 
 function chatHandler(user, message, flags, self, extra) {
@@ -96,10 +93,8 @@ function commandHandler(user, command, message, flags, extra) {
 
     getUserProfilePic(extra.userId)
       .then(profileImage => {
-        ;
         var u = new UserData(extra.userId, extra.displayName, profileImage)
         users.push(u)
-        console.log(users);
         serverSocket.emit('updatedUsers', users, u);
       });
   }
