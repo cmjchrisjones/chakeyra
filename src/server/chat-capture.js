@@ -30,51 +30,34 @@ class UserData {
 
 let users = new Array();
 
-// getUserProfilePic(userId)
-//   .then(res => {
-//     var playerList = document.getElementById('playerList');
-//     var img = document.createElement('img');
-//     img.className = 'playerImage';
-//     img.src = res;
-//     playerList.appendChild(img);
-//   });
-
-
 function getUserProfilePic(userId) {
-  console.log("getUserProfilePic");
-  const config = {
+  return axios({
+    method: "get",
+    url: `https://api.twitch.tv/helix/users?id=${userId}`,
     headers: {
       Authorization: `Bearer ${process.env.TWITCH_CHANNEL_AUTH_TOKEN}`,
       'Content-Type': 'application/json',
       'Client-ID': process.env.TWITCH_CLIENT_ID
     }
-  };
-
-  let url = `https://api.twitch.tv/helix/users?id=${userId}`;
-  axios({
-    url: url,
-    method: 'get',
-    headers: config.headers
   })
     .then(res => {
-      console.log(res);
       if (res.data) {
         const body = res.data;
         const userData = body.data.length > 1 ? body.data : body.data[0];
         if (userData) {
-          console.log(userData);
           let profileUrl = userData.profile_image_url;
-          var user = new UserData(userId, userData.display_name, profileUrl);
-          users.push(user);
-          console.log(user);
-          console.log(users);
+          // var user = new UserData(userId, userData.display_name, profileUrl);
+          // users.push(user);
           // updatePlayerCount();
-          return profileUrl.replace('300x300', '70x70');
+          var profileImageUrl = profileUrl.replace('300x300', '70x70'); 
+          return profileImageUrl;
         }
       }
     })
-    .catch(err => console.error(err))
+
+    .catch(err => console.error(err));
 }
+
 
 function connect(server) {
   serverSocket = server;
@@ -110,8 +93,15 @@ function commandHandler(user, command, message, flags, extra) {
   if (command === 'join' && !players.find(player => player === user)) {
     players.push(user);
     serverSocket.emit('playerJoined', user, extra.userId);
-    console.log(users);
-    serverSocket.emit('updatedUsers', users);
+
+    getUserProfilePic(extra.userId)
+      .then(profileImage => {
+        ;
+        var u = new UserData(extra.userId, extra.displayName, profileImage)
+        users.push(u)
+        console.log(users);
+        serverSocket.emit('updatedUsers', users, u);
+      });
   }
 }
 

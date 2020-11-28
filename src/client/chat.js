@@ -40,9 +40,20 @@ socket.on('playerJoined', async (user, userId, clientId, authToken) => {
   socket.emit("getUserData(userId)");
 });
 
-socket.on('updatedUsers', (userList) => {
+socket.on('updatedUsers', (userList, newUser) => {
   console.log("Received updated player list");
   console.table(userList);
+  console.log(newUser)
+  var playerList = document.getElementById('playerList');
+  var img = document.createElement('img');
+  img.className = 'playerImage';
+  img.src = newUser.profileImageUrl;
+  console.log(img);
+  playerList.appendChild(img);
+
+  var playerCount = document.getElementById('playerCountInfo');
+  playerCount.innerText = "";
+  playerCount.innerText = userList.length < 2 ? `${userList.length} player` : `${userList.length} players`
 });
 
 function updatePlayerCount() {
